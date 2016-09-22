@@ -6,24 +6,23 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @ORM\Entity(repositoryClass="SlimDemo\Repository\CommentRepository")
+ * @ORM\Entity
  * @ORM\Table(name="comments")
  */
-class Comment
+class Comment implements \JsonSerializable
 {
     /**
      * @var string
-     * @ORM\Column(name="id", type="string", length=24)
+     * @ORM\Column(name="id", type="guid", length=24)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
      */
     protected $id;
 
     /**
      * @var \DateTime
-     * @ORM\Column(name="date", type="date", nullable=false)
+     * @ORM\Column(name="create_at", type="date", nullable=false)
      */
-    protected $date;
+    protected $createAt;
 
     /**
      * @var string
@@ -31,15 +30,20 @@ class Comment
      */
     protected $comment;
 
-    public function __construct()
+    /**
+     * @param string|null    $uuid
+     * @param \DateTime|null $createAt
+     */
+    public function __construct(string $uuid = null, \DateTime $createAt = null)
     {
-        $this->id = Uuid::uuid4();
+        $this->id = $uuid ?? Uuid::uuid4();
+        $this->createAt = $createAt ?? new \DateTime();
     }
 
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -47,35 +51,25 @@ class Comment
     /**
      * @return \DateTime
      */
-    public function getDate()
+    public function getCreateAt(): \DateTime
     {
-        return $this->date;
+        return $this->createAt;
     }
 
     /**
-     * @param \DateTime $date
-     * @return Comment
+     * @return string
      */
-    public function setDate(\DateTime $date)
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getComment()
+    public function getComment(): string
     {
         return $this->comment;
     }
 
     /**
      * @param string $comment
+     *
      * @return Comment
      */
-    public function setComment($comment)
+    public function setComment(string $comment): self
     {
         $this->comment = $comment;
 
@@ -83,14 +77,14 @@ class Comment
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function toJson()
+    public function jsonSerialize(): array
     {
-        return json_encode([
+        return [
             'id' => $this->getId(),
-            'date' => $this->getDate()->format('Y-m-d H:i:s'),
-            'comment' => $this->getComment()
-        ]);
+            'date' => $this->getCreateAt()->format('Y-m-d H:i:s'),
+            'comment' => $this->getComment(),
+        ];
     }
 }
