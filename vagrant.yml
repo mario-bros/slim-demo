@@ -1,5 +1,6 @@
 ---
 hostname: slim-demo.dev
-application: symfony3 
+application: symfony3
+phpversion: 7.0
 network:
   ip: 10.11.12.13
