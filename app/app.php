@@ -53,6 +53,15 @@ $container['slimdemo.comment.controller'] = function() use ($container) {
     return new CommentController($container['doctrine']->getManager());
 };
 
-$app->get('/comments/{id}', [$container['slimdemo.comment.controller'], 'get']);
+$app->group('/comments', function () use ($app, $container) {
+    $app->get('', [$container['slimdemo.comment.controller'], 'list']);
+    $app->post('', [$container['slimdemo.comment.controller'], 'post']);
+});
+
+$app->group('/comments/{id}', function () use ($app, $container) {
+    $app->get('', [$container['slimdemo.comment.controller'], 'get']);
+    $app->patch('', [$container['slimdemo.comment.controller'], 'patch']);
+    $app->delete('', [$container['slimdemo.comment.controller'], 'delete']);
+});
 
 return $app;
