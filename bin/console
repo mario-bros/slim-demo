@@ -1,9 +1,12 @@
 #!/usr/bin/env php
 <?php
 
+use Pimple\Container;
+
 set_time_limit(0);
 
 $app = require(__DIR__ . '/../app/app.php');
 
+/** @var Container $container */
 $container = $app->getContainer();
 $container['console']->run();
