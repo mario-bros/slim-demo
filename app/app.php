@@ -3,11 +3,14 @@
 use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Pimple\Container;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 use Saxulum\Console\Provider\ConsoleProvider;
 use Saxulum\DoctrineOrmManagerRegistry\Provider\DoctrineOrmManagerRegistryProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use Slim\App;
 use SlimDemo\Controller\CommentController;
+use SlimDemo\Exception\HttpException;
 
 $appDir = __DIR__;
 $rootDir = realpath($appDir.'/..');
@@ -55,6 +58,44 @@ $container->register(new DoctrineOrmServiceProvider(), [
 ]);
 
 $container->register(new DoctrineOrmManagerRegistryProvider());
+
+$container['errorHandler'] = function () {
+    return function (Request $request, Response $response, \Exception $exception) {
+        $response = $response->withHeader('Content-Type', 'application/json');
+
+        if ($exception instanceof HttpException) {
+            $response = $response->withStatus($exception->getCode());
+        } else {
+            $response = $response->withStatus(500);
+        }
+
+        $response->getBody()->write(json_encode(['error' => $exception->getMessage()]));
+
+        return $response;
+    };
+};
+
+$container['notFoundHandler'] = function () {
+    return function (Request $request, Response $response) {
+        $response = $response->withStatus(404)->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode(['error' => 'Route not found']));
+
+        return $response;
+    };
+};
+
+$container['notAllowedHandler'] = function () {
+    return function (Request $request, Response $response, array $methods) {
+        $response = $response
+            ->withStatus(405)
+            ->withHeader('Allow', implode(', ', $methods))
+            ->withHeader('Content-Type', 'application/json');
+
+        $response->getBody()->write(json_encode(['error' => 'Route not found']));
+
+        return $response;
+    };
+};
 
 $container[CommentController::class] = function () use ($container) {
     return new CommentController($container['doctrine']->getManager());

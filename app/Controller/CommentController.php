@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use SlimDemo\Entity\Comment;
+use SlimDemo\Exception\EntityNotFoundException;
 
 final class CommentController
 {
@@ -43,6 +44,8 @@ final class CommentController
      * @param Response $response
      *
      * @return Response
+     *
+     * @throws EntityNotFoundException
      */
     public function get(Request $request, Response $response): Response
     {
@@ -53,7 +56,7 @@ final class CommentController
         /** @var Comment $comment */
         $comment = $this->entityManager->getRepository(Comment::class)->find($id);
         if (null === $comment) {
-            return $this->getNotFoundResponse($response, $id);
+            throw EntityNotFoundException::create(Comment::class, $id);
         }
 
         $response->getBody()->write(json_encode($comment));
@@ -93,6 +96,8 @@ final class CommentController
      * @param Response $response
      *
      * @return int|Response
+     *
+     * @throws EntityNotFoundException
      */
     public function put(Request $request, Response $response): Response
     {
@@ -103,7 +108,7 @@ final class CommentController
         /** @var Comment $comment */
         $comment = $this->entityManager->getRepository(Comment::class)->find($id);
         if (null === $comment) {
-            return $this->getNotFoundResponse($response, $id);
+            throw EntityNotFoundException::create(Comment::class, $id);
         }
 
         $data = $request->getParsedBody();
@@ -127,6 +132,8 @@ final class CommentController
      * @param Response $response
      *
      * @return Response
+     *
+     * @throws EntityNotFoundException
      */
     public function delete(Request $request, Response $response): Response
     {
@@ -137,7 +144,7 @@ final class CommentController
         /** @var Comment $comment */
         $comment = $this->entityManager->getRepository(Comment::class)->find($id);
         if (null === $comment) {
-            return $this->getNotFoundResponse($response, $id);
+            throw EntityNotFoundException::create(Comment::class, $id);
         }
 
         $this->entityManager->remove($comment);
@@ -156,20 +163,6 @@ final class CommentController
     private function addHeaders(Response $response): Response
     {
         return $response->withHeader('Content-Type', 'application/json');
-    }
-
-    /**
-     * @param Response $response
-     * @param string   $id
-     *
-     * @return Response
-     */
-    private function getNotFoundResponse(Response $response, string $id): Response
-    {
-        $response = $response->withStatus(404);
-        $response->getBody()->write(json_encode(['error' => sprintf('Unknown comment with id %s', $id)]));
-
-        return $response;
     }
 
     /**
