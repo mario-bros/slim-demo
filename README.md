@@ -14,12 +14,12 @@ A simple REST demo using Doctrine ORM.
 
 ```{.sh}
 git clone https://github.com/dominikzogg/slim-demo.git
-cd slim-demo
 ```
 
 ### Install vagrant
 
 ```{.sh}
+cd slim-demo
 git submodule update --init -- vagrant-php
 git submodule update --remote -- vagrant-php
 ```
