@@ -2,18 +2,19 @@
 
 use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Pimple\Container;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Saxulum\Console\Provider\ConsoleProvider;
 use Saxulum\DoctrineOrmManagerRegistry\Provider\DoctrineOrmManagerRegistryProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use Slim\App;
+use Slim\Container;
 use SlimDemo\Controller\CommentController;
 use SlimDemo\Exception\HttpException;
 
 $appDir = __DIR__;
 $rootDir = realpath($appDir.'/..');
+$cacheDir = $rootDir.'/var/cache';
 
 $loader = require $rootDir.'/vendor/autoload.php';
 
@@ -23,14 +24,16 @@ $config = [
     'settings' => [
         'displayErrorDetails' => true,
     ],
+
+    // needed by some silex based pimple providers
+    'debug' => true
 ];
 
-$app = new App($config);
+$container = new Container($config);
 
-/** @var Container $container */
-$container = $app->getContainer();
-
-$container->register(new ConsoleProvider());
+$container->register(new ConsoleProvider(), [
+    'console.cache' => $cacheDir
+]);
 
 $container->register(new DoctrineServiceProvider(), [
     'db.options' => [
@@ -44,7 +47,7 @@ $container->register(new DoctrineServiceProvider(), [
 ]);
 
 $container->register(new DoctrineOrmServiceProvider(), [
-    'orm.proxies_dir' => $rootDir.'/var/cache/doctrine/proxies',
+    'orm.proxies_dir' => $cacheDir.'/doctrine/proxies',
     'orm.em.options' => [
         'mappings' => [
             [
@@ -100,6 +103,8 @@ $container['notAllowedHandler'] = function () {
 $container[CommentController::class] = function () use ($container) {
     return new CommentController($container['doctrine']->getManager());
 };
+
+$app = new App($container);
 
 $app->group('/comments', function () use ($app, $container) {
     $app->get('', CommentController::class.':list');
