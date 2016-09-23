@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use SlimDemo\Entity\Comment;
-use SlimDemo\Exception\EntityNotFoundException;
+use SlimDemo\Exception\NotFoundException;
 
 final class CommentController
 {
@@ -45,7 +45,7 @@ final class CommentController
      *
      * @return Response
      *
-     * @throws EntityNotFoundException
+     * @throws NotFoundException
      */
     public function get(Request $request, Response $response): Response
     {
@@ -56,7 +56,7 @@ final class CommentController
         /** @var Comment $comment */
         $comment = $this->entityManager->getRepository(Comment::class)->find($id);
         if (null === $comment) {
-            throw EntityNotFoundException::create(Comment::class, $id);
+            throw NotFoundException::createForEntity(Comment::class, $id);
         }
 
         $response->getBody()->write(json_encode($comment));
@@ -97,7 +97,7 @@ final class CommentController
      *
      * @return int|Response
      *
-     * @throws EntityNotFoundException
+     * @throws NotFoundException
      */
     public function put(Request $request, Response $response): Response
     {
@@ -108,7 +108,7 @@ final class CommentController
         /** @var Comment $comment */
         $comment = $this->entityManager->getRepository(Comment::class)->find($id);
         if (null === $comment) {
-            throw EntityNotFoundException::create(Comment::class, $id);
+            throw NotFoundException::createForEntity(Comment::class, $id);
         }
 
         $data = $request->getParsedBody();
@@ -133,7 +133,7 @@ final class CommentController
      *
      * @return Response
      *
-     * @throws EntityNotFoundException
+     * @throws NotFoundException
      */
     public function delete(Request $request, Response $response): Response
     {
@@ -144,7 +144,7 @@ final class CommentController
         /** @var Comment $comment */
         $comment = $this->entityManager->getRepository(Comment::class)->find($id);
         if (null === $comment) {
-            throw EntityNotFoundException::create(Comment::class, $id);
+            throw NotFoundException::createForEntity(Comment::class, $id);
         }
 
         $this->entityManager->remove($comment);
