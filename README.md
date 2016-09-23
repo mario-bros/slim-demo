@@ -48,3 +48,10 @@ vagrant ssh -c "echo 'CREATE DATABASE slim_demo;' | mysql"
 ```{.sh}
 vagrant ssh -c "bin/console doctrine:schema:update --force"
 ```
+
+### Postman Config
+
+[slim-demo.postman_collection][1]
+
+
+[1]: slim-demo.postman_collection.json
