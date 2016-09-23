@@ -1,9 +1,5 @@
 <?php
 
-use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
-use Saxulum\Console\Provider\ConsoleProvider;
-use Saxulum\DoctrineOrmManagerRegistry\Provider\DoctrineOrmManagerRegistryProvider;
-use Silex\Provider\DoctrineServiceProvider;
 use Slim\App;
 use Slim\Container;
 
@@ -18,10 +14,7 @@ if (is_file($enviromentConfigPath)) {
 
 $container = new Container($config['settings']);
 
-$container->register(new ConsoleProvider());
-$container->register(new DoctrineServiceProvider());
-$container->register(new DoctrineOrmServiceProvider());
-$container->register(new DoctrineOrmManagerRegistryProvider());
+require $appDir.'/providers.php';
 
 foreach ($config['thirdpartySettings'] as $key => $value) {
     $container[$key] = $value;
