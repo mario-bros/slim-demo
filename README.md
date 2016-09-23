@@ -14,6 +14,7 @@ A simple REST demo using Doctrine ORM.
 
 ```{.sh}
 git clone https://github.com/dominikzogg/slim-demo.git
+cd slim-demo
 ```
 
 ### Install vagrant
