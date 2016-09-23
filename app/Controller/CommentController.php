@@ -94,7 +94,7 @@ final class CommentController
      *
      * @return int|Response
      */
-    public function patch(Request $request, Response $response): Response
+    public function put(Request $request, Response $response): Response
     {
         $response = $this->addHeaders($response);
 
