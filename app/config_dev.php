@@ -5,6 +5,6 @@ return [
         'displayErrorDetails' => true,
     ],
     'thirdpartySettings' => [
-        'debug' => true,
+        'debug' => $debug ?? true,
     ],
 ];

@@ -5,7 +5,7 @@ return [
         'displayErrorDetails' => false,
     ],
     'thirdpartySettings' => [
-        'debug' => false,
+        'debug' => $debug ?? false,
         'console.cache' => $cacheDir,
         'db.options' => [
             'driver' => 'pdo_mysql',

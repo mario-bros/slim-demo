@@ -11,7 +11,7 @@ $appDir = __DIR__;
 $cacheDir = realpath($appDir.'/../var/cache');
 
 $config = require $appDir.'/config.php';
-$enviromentConfigPath = $appDir.'/config_'.$enviroment ?? 'prod'.'.php';
+$enviromentConfigPath = $appDir.'/config_'.($enviroment ?? 'prod').'.php';
 if (is_file($enviromentConfigPath)) {
     $config = array_replace_recursive($config, require $enviromentConfigPath);
 }

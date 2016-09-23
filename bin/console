@@ -11,6 +11,7 @@ $loader = require __DIR__.'/../app/autoload.php';
 
 $input = new ArgvInput();
 $enviroment = $input->getParameterOption(array('--env', '-e'), getenv('APP_ENV') ?: 'dev');
+$debug = getenv('APP_DEBUG') !== '0' && !$input->hasParameterOption(array('--no-debug', '')) && $enviroment !== 'prod';
 
 /** @var App $app */
 $app = require(__DIR__ . '/../app/app.php');
