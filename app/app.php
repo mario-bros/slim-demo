@@ -56,19 +56,19 @@ $container->register(new DoctrineOrmServiceProvider(), [
 
 $container->register(new DoctrineOrmManagerRegistryProvider());
 
-$container['slimdemo.comment.controller'] = function () use ($container) {
+$container[CommentController::class] = function () use ($container) {
     return new CommentController($container['doctrine']->getManager());
 };
 
 $app->group('/comments', function () use ($app, $container) {
-    $app->get('', [$container['slimdemo.comment.controller'], 'list']);
-    $app->post('', [$container['slimdemo.comment.controller'], 'post']);
+    $app->get('', CommentController::class .':list');
+    $app->post('', CommentController::class .':post');
 });
 
 $app->group('/comments/{id}', function () use ($app, $container) {
-    $app->get('', [$container['slimdemo.comment.controller'], 'get']);
-    $app->patch('', [$container['slimdemo.comment.controller'], 'patch']);
-    $app->delete('', [$container['slimdemo.comment.controller'], 'delete']);
+    $app->get('', CommentController::class .':get');
+    $app->put('', CommentController::class .':put');
+    $app->delete('', CommentController::class .':delete');
 });
 
 return $app;
