@@ -5,9 +5,10 @@ use Slim\Container;
 
 $appDir = __DIR__;
 $cacheDir = realpath($appDir.'/../var/cache');
+$configDir = realpath($appDir.'/../config');
 
-$config = require $appDir.'/config.php';
-$enviromentConfigPath = $appDir.'/config_'.($enviroment ?? 'prod').'.php';
+$config = require $configDir.'/config.php';
+$enviromentConfigPath = $configDir.'/config_'.($enviroment ?? 'prod').'.php';
 if (is_file($enviromentConfigPath)) {
     $config = array_replace_recursive($config, require $enviromentConfigPath);
 }
