@@ -31,6 +31,12 @@ cd vagrant-php
 vagrant up
 ```
 
+### Install vendors
+
+```{.sh}
+vagrant ssh -c "composer.phar install"
+```
+
 ### Create MYSQL database
 
 ```{.sh}
