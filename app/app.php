@@ -12,16 +12,15 @@ use SlimDemo\Controller\CommentController;
 use SlimDemo\Exception\HttpException;
 
 $appDir = __DIR__;
-$configDir = $appDir.'/config';
 
 $rootDir = realpath($appDir.'/..');
 $cacheDir = $rootDir.'/var/cache';
 
 $enviroment = $enviroment ?? 'prod';
 
-$config = require $configDir.'/config.php';
+$config = require $appDir.'/config.php';
 
-$enviromentConfigPath = $configDir.'/config_'.$enviroment.'.php';
+$enviromentConfigPath = $appDir.'/config_'.$enviroment.'.php';
 if (is_file($enviromentConfigPath)) {
     $config = array_replace_recursive($config, require $enviromentConfigPath);
 }
