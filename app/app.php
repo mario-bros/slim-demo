@@ -1,7 +1,6 @@
 <?php
 
 use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Saxulum\Console\Provider\ConsoleProvider;
@@ -13,26 +12,24 @@ use SlimDemo\Controller\CommentController;
 use SlimDemo\Exception\HttpException;
 
 $appDir = __DIR__;
+$configDir = $appDir.'/config';
+
 $rootDir = realpath($appDir.'/..');
 $cacheDir = $rootDir.'/var/cache';
 
-$loader = require $rootDir.'/vendor/autoload.php';
+$enviroment = $enviroment ?? 'prod';
 
-AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+$config = require $configDir.'/config.php';
 
-$config = [
-    'settings' => [
-        'displayErrorDetails' => true,
-    ],
-
-    // needed by some silex based pimple providers
-    'debug' => true
-];
+$enviromentConfigPath = $configDir.'/config_'.$enviroment.'.php';
+if (is_file($enviromentConfigPath)) {
+    $config = array_replace_recursive($config, require $enviromentConfigPath);
+}
 
 $container = new Container($config);
 
 $container->register(new ConsoleProvider(), [
-    'console.cache' => $cacheDir
+    'console.cache' => $cacheDir,
 ]);
 
 $container->register(new DoctrineServiceProvider(), [
