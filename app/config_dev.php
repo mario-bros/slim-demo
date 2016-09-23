@@ -1,8 +1,10 @@
 <?php
 
 return [
-    'debug' => true,
     'settings' => [
         'displayErrorDetails' => true,
+    ],
+    'thirdpartySettings' => [
+        'debug' => true,
     ],
 ];
