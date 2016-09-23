@@ -7,6 +7,7 @@ final class NotFoundException extends HttpException
     /**
      * @param string $class
      * @param string $id
+     *
      * @return NotFoundException
      */
     public static function createForEntity(string $class, string $id): self

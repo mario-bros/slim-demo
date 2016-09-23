@@ -102,14 +102,14 @@ $container[CommentController::class] = function () use ($container) {
 };
 
 $app->group('/comments', function () use ($app, $container) {
-    $app->get('', CommentController::class .':list');
-    $app->post('', CommentController::class .':post');
+    $app->get('', CommentController::class.':list');
+    $app->post('', CommentController::class.':post');
 });
 
 $app->group('/comments/{id}', function () use ($app, $container) {
-    $app->get('', CommentController::class .':get');
-    $app->put('', CommentController::class .':put');
-    $app->delete('', CommentController::class .':delete');
+    $app->get('', CommentController::class.':get');
+    $app->put('', CommentController::class.':put');
+    $app->delete('', CommentController::class.':delete');
 });
 
 return $app;

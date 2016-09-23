@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityManager;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use SlimDemo\Entity\Comment;
+use SlimDemo\Exception\BadRequestException;
+use SlimDemo\Exception\HttpException;
 use SlimDemo\Exception\NotFoundException;
 
 final class CommentController
@@ -69,6 +71,8 @@ final class CommentController
      * @param Response $response
      *
      * @return int|Response
+     *
+     * @throws BadRequestException
      */
     public function post(Request $request, Response $response): Response
     {
@@ -77,7 +81,7 @@ final class CommentController
         $data = $request->getParsedBody();
 
         if (!isset($data['comment'])) {
-            return $this->getMissingArgumentException($response, 'comment');
+            throw BadRequestException::createForMissingArgument('comment');
         }
 
         $comment = new Comment();
@@ -97,7 +101,7 @@ final class CommentController
      *
      * @return int|Response
      *
-     * @throws NotFoundException
+     * @throws HttpException
      */
     public function put(Request $request, Response $response): Response
     {
@@ -114,7 +118,7 @@ final class CommentController
         $data = $request->getParsedBody();
 
         if (!isset($data['comment'])) {
-            return $this->getMissingArgumentException($response, 'comment');
+            throw BadRequestException::createForMissingArgument('comment');
         }
 
         $comment->setComment($data['comment']);
@@ -163,19 +167,5 @@ final class CommentController
     private function addHeaders(Response $response): Response
     {
         return $response->withHeader('Content-Type', 'application/json');
-    }
-
-    /**
-     * @param Response $response
-     * @param string   $argument
-     *
-     * @return Response
-     */
-    private function getMissingArgumentException(Response $response, string $argument): Response
-    {
-        $response = $response->withStatus(400);
-        $response->getBody()->write(json_encode(['error' => sprintf('Missing argument %s', $argument)]));
-
-        return $response;
     }
 }
