@@ -2,9 +2,11 @@
 <?php
 
 use Pimple\Container;
+use Slim\App;
 
 set_time_limit(0);
 
+/** @var App $app */
 $app = require(__DIR__ . '/../app/app.php');
 
 /** @var Container $container */
